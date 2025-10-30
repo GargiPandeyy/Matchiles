@@ -246,6 +246,9 @@ function checkMatch() {
         card1.classList.add('matched');
         card2.classList.add('matched');
 
+        createParticles(card1);
+        createParticles(card2);
+
         combo++;
         clearTimeout(comboTimer);
 
@@ -301,6 +304,35 @@ function showFloatingScore(points, card) {
     setTimeout(() => {
         floatingText.remove();
     }, 1000);
+}
+
+function createParticles(card) {
+    let particles = ['⭐', '✨', '💫', '🎃', '👻'];
+    let gameBoard = document.getElementById('game-board');
+
+    for (let i = 0; i < 8; i++) {
+        let particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+
+        let angle = (Math.PI * 2 * i) / 8;
+        let velocity = 50 + Math.random() * 30;
+
+        particle.style.left = card.offsetLeft + 50 + 'px';
+        particle.style.top = card.offsetTop + 50 + 'px';
+
+        gameBoard.appendChild(particle);
+
+        let x = Math.cos(angle) * velocity;
+        let y = Math.sin(angle) * velocity;
+
+        particle.style.setProperty('--x', x + 'px');
+        particle.style.setProperty('--y', y + 'px');
+
+        setTimeout(() => {
+            particle.remove();
+        }, 1000);
+    }
 }
 
 let diffBtns = document.querySelectorAll('.diff-btn');

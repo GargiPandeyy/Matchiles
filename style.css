@@ -197,6 +197,25 @@ h1 {
     }
 }
 
+.particle {
+    position: absolute;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 100;
+    animation: particleExplode 1s ease-out forwards;
+}
+
+@keyframes particleExplode {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) rotate(360deg) scale(0);
+    }
+}
+
 #game-board {
     position: relative;
 }
