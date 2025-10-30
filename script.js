@@ -35,8 +35,18 @@ function createBoard() {
         cardInner.appendChild(cardBack);
         card.appendChild(cardInner);
 
+        card.addEventListener('click', flipCard);
         gameBoard.appendChild(card);
     });
+}
+
+function flipCard() {
+    if (flippedCards.length >= 2) return;
+    if (this.classList.contains('flipped')) return;
+
+    this.classList.add('flipped');
+    this.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
+    flippedCards.push(this);
 }
 
 createBoard();
