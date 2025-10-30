@@ -3,12 +3,20 @@ let cards = [];
 let flippedCards = [];
 let moves = 0;
 let matchedPairs = 0;
+let currentLevel = 'easy';
+
+let levels = {
+    easy: { pairs: 8, cols: 4, time: 120, preview: 5 },
+    medium: { pairs: 10, cols: 5, time: 90, preview: 3 },
+    hard: { pairs: 12, cols: 6, time: 60, preview: 2 }
+};
 
 function createBoard() {
     let gameBoard = document.getElementById('game-board');
-    gameBoard.style.gridTemplateColumns = 'repeat(4, 100px)';
+    let level = levels[currentLevel];
+    gameBoard.style.gridTemplateColumns = `repeat(${level.cols}, 100px)`;
 
-    let selectedEmojis = emojis.slice(0, 8);
+    let selectedEmojis = emojis.slice(0, level.pairs);
     cards = [...selectedEmojis, ...selectedEmojis];
     cards = cards.sort(() => Math.random() - 0.5);
 
@@ -71,6 +79,25 @@ function checkMatch() {
             flippedCards = [];
         }, 1000);
     }
+}
+
+let diffBtns = document.querySelectorAll('.diff-btn');
+diffBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        diffBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentLevel = this.dataset.level;
+        resetGame();
+    });
+});
+
+function resetGame() {
+    moves = 0;
+    matchedPairs = 0;
+    flippedCards = [];
+    document.getElementById('moves').textContent = 0;
+    document.getElementById('timer').textContent = levels[currentLevel].time;
+    createBoard();
 }
 
 createBoard();

@@ -25,6 +25,35 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
+.difficulty-selector {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.diff-btn {
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.3);
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.diff-btn:hover {
+    background: rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+}
+
+.diff-btn.active {
+    background: white;
+    color: #667eea;
+}
+
 .game-info {
     display: flex;
     justify-content: center;
