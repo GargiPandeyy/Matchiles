@@ -4,6 +4,9 @@ let flippedCards = [];
 let moves = 0;
 let matchedPairs = 0;
 let currentLevel = 'easy';
+let timeLeft = 0;
+let timerInterval = null;
+let gameStarted = false;
 
 let levels = {
     easy: { pairs: 8, cols: 4, time: 120, preview: 5 },
@@ -52,6 +55,11 @@ function flipCard() {
     if (flippedCards.length >= 2) return;
     if (this.classList.contains('flipped')) return;
 
+    if (!gameStarted) {
+        startTimer();
+        gameStarted = true;
+    }
+
     this.classList.add('flipped');
     this.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
     flippedCards.push(this);
@@ -63,6 +71,29 @@ function flipCard() {
     }
 }
 
+function startTimer() {
+    timeLeft = levels[currentLevel].time;
+    document.getElementById('timer').textContent = timeLeft;
+
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            gameOver(false);
+        }
+    }, 1000);
+}
+
+function gameOver(won) {
+    clearInterval(timerInterval);
+    let allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.style.pointerEvents = 'none';
+    });
+}
+
 function checkMatch() {
     let card1 = flippedCards[0];
     let card2 = flippedCards[1];
@@ -70,6 +101,12 @@ function checkMatch() {
     if (card1.dataset.emoji === card2.dataset.emoji) {
         flippedCards = [];
         matchedPairs++;
+
+        if (matchedPairs === levels[currentLevel].pairs) {
+            setTimeout(() => {
+                gameOver(true);
+            }, 500);
+        }
     } else {
         setTimeout(() => {
             card1.classList.remove('flipped');
@@ -95,6 +132,8 @@ function resetGame() {
     moves = 0;
     matchedPairs = 0;
     flippedCards = [];
+    gameStarted = false;
+    clearInterval(timerInterval);
     document.getElementById('moves').textContent = 0;
     document.getElementById('timer').textContent = levels[currentLevel].time;
     createBoard();
