@@ -7,6 +7,9 @@ let currentLevel = 'easy';
 let timeLeft = 0;
 let timerInterval = null;
 let gameStarted = false;
+let score = 0;
+let combo = 0;
+let comboTimer = null;
 
 let levels = {
     easy: { pairs: 8, cols: 4, time: 120, preview: 5 },
@@ -132,6 +135,31 @@ function checkMatch() {
     let card2 = flippedCards[1];
 
     if (card1.dataset.emoji === card2.dataset.emoji) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+
+        combo++;
+        clearTimeout(comboTimer);
+
+        let basePoints = 100;
+        let comboBonus = combo > 1 ? (combo - 1) * 50 : 0;
+        let timeBonus = Math.floor(timeLeft / 10) * 10;
+        let earnedPoints = basePoints + comboBonus + timeBonus;
+
+        score += earnedPoints;
+        document.getElementById('score').textContent = score;
+
+        if (combo > 1) {
+            document.getElementById('combo-display').style.display = 'flex';
+            document.getElementById('combo').textContent = combo;
+            showFloatingScore(earnedPoints, card1);
+        }
+
+        comboTimer = setTimeout(() => {
+            combo = 0;
+            document.getElementById('combo-display').style.display = 'none';
+        }, 3000);
+
         flippedCards = [];
         matchedPairs++;
 
@@ -141,6 +169,9 @@ function checkMatch() {
             }, 500);
         }
     } else {
+        combo = 0;
+        document.getElementById('combo-display').style.display = 'none';
+
         setTimeout(() => {
             card1.classList.remove('flipped');
             card2.classList.remove('flipped');
@@ -149,6 +180,19 @@ function checkMatch() {
             flippedCards = [];
         }, 1000);
     }
+}
+
+function showFloatingScore(points, card) {
+    let floatingText = document.createElement('div');
+    floatingText.className = 'floating-score';
+    floatingText.textContent = `+${points}`;
+    floatingText.style.left = card.offsetLeft + 'px';
+    floatingText.style.top = card.offsetTop + 'px';
+    document.getElementById('game-board').appendChild(floatingText);
+
+    setTimeout(() => {
+        floatingText.remove();
+    }, 1000);
 }
 
 let diffBtns = document.querySelectorAll('.diff-btn');
@@ -166,8 +210,13 @@ function resetGame() {
     matchedPairs = 0;
     flippedCards = [];
     gameStarted = false;
+    score = 0;
+    combo = 0;
     clearInterval(timerInterval);
+    clearTimeout(comboTimer);
     document.getElementById('moves').textContent = 0;
+    document.getElementById('score').textContent = 0;
+    document.getElementById('combo-display').style.display = 'none';
     document.getElementById('timer').textContent = levels[currentLevel].time;
     document.getElementById('game-over-modal').classList.remove('active');
     createBoard();
