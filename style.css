@@ -82,6 +82,11 @@ h1 {
     height: 100px;
     cursor: pointer;
     perspective: 1000px;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.05);
 }
 
 .card-inner {
@@ -109,9 +114,11 @@ h1 {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .card-back {
     background: white;
     transform: rotateY(180deg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
