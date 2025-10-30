@@ -47,6 +47,30 @@ function flipCard() {
     this.classList.add('flipped');
     this.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
     flippedCards.push(this);
+
+    if (flippedCards.length === 2) {
+        moves++;
+        document.getElementById('moves').textContent = moves;
+        checkMatch();
+    }
+}
+
+function checkMatch() {
+    let card1 = flippedCards[0];
+    let card2 = flippedCards[1];
+
+    if (card1.dataset.emoji === card2.dataset.emoji) {
+        flippedCards = [];
+        matchedPairs++;
+    } else {
+        setTimeout(() => {
+            card1.classList.remove('flipped');
+            card2.classList.remove('flipped');
+            card1.querySelector('.card-inner').style.transform = 'rotateY(0deg)';
+            card2.querySelector('.card-inner').style.transform = 'rotateY(0deg)';
+            flippedCards = [];
+        }, 1000);
+    }
 }
 
 createBoard();
