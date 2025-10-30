@@ -150,7 +150,10 @@ function resetGame() {
     clearInterval(timerInterval);
     document.getElementById('moves').textContent = 0;
     document.getElementById('timer').textContent = levels[currentLevel].time;
+    document.getElementById('game-over-modal').classList.remove('active');
     createBoard();
 }
+
+document.getElementById('restart-btn').addEventListener('click', resetGame);
 
 createBoard();
