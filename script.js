@@ -173,6 +173,10 @@ function resetGame() {
     createBoard();
 }
 
-document.getElementById('restart-btn').addEventListener('click', resetGame);
+function init() {
+    document.getElementById('restart-btn').addEventListener('click', resetGame);
+    document.getElementById('timer').textContent = levels[currentLevel].time;
+    createBoard();
+}
 
-createBoard();
+init();
