@@ -13,6 +13,92 @@ let comboTimer = null;
 let hauntedModeActive = false;
 let ghostModeActive = false;
 let hauntedInterval = null;
+let audioContext = null;
+
+function initAudio() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
+
+function playFlipSound() {
+    initAudio();
+    let oscillator = audioContext.createOscillator();
+    let gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = 400;
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+function playMatchSound() {
+    initAudio();
+    let oscillator = audioContext.createOscillator();
+    let gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+    oscillator.stop(audioContext.currentTime + 0.3);
+}
+
+function playWinSound() {
+    initAudio();
+    let notes = [523, 659, 784, 1047];
+
+    notes.forEach((freq, index) => {
+        let oscillator = audioContext.createOscillator();
+        let gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+
+        let startTime = audioContext.currentTime + (index * 0.15);
+        gainNode.gain.setValueAtTime(0.15, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.2);
+    });
+}
+
+function playGameOverSound() {
+    initAudio();
+    let oscillator = audioContext.createOscillator();
+    let gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = 200;
+    oscillator.type = 'sawtooth';
+
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+    oscillator.stop(audioContext.currentTime + 0.5);
+}
 
 let levels = {
     easy: { pairs: 8, cols: 4, time: 120, preview: 5 },
@@ -92,6 +178,7 @@ function flipCard() {
     this.classList.add('flipped');
     this.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
     flippedCards.push(this);
+    playFlipSound();
 
     if (flippedCards.length === 2) {
         moves++;
@@ -176,9 +263,11 @@ function gameOver(won) {
         title.textContent = 'You Win!';
         message.textContent = `Score: ${score} | Moves: ${moves} | Time left: ${timeLeft}s`;
         saveHighScore(score, currentLevel);
+        playWinSound();
     } else {
         title.textContent = 'Game Over!';
         message.textContent = 'Time ran out! Try again?';
+        playGameOverSound();
     }
 
     modal.classList.add('active');
@@ -248,6 +337,7 @@ function checkMatch() {
 
         createParticles(card1);
         createParticles(card2);
+        playMatchSound();
 
         combo++;
         clearTimeout(comboTimer);
