@@ -49,6 +49,25 @@ function createBoard() {
         card.addEventListener('click', flipCard);
         gameBoard.appendChild(card);
     });
+
+    showPreview();
+}
+
+function showPreview() {
+    let allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.classList.add('flipped');
+        card.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
+        card.style.pointerEvents = 'none';
+    });
+
+    setTimeout(() => {
+        allCards.forEach(card => {
+            card.classList.remove('flipped');
+            card.querySelector('.card-inner').style.transform = 'rotateY(0deg)';
+            card.style.pointerEvents = 'auto';
+        });
+    }, levels[currentLevel].preview * 1000);
 }
 
 function flipCard() {
