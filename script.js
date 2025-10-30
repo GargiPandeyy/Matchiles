@@ -121,13 +121,68 @@ function gameOver(won) {
 
     if (won) {
         title.textContent = 'You Win!';
-        message.textContent = `You completed the game in ${moves} moves with ${timeLeft} seconds left!`;
+        message.textContent = `Score: ${score} | Moves: ${moves} | Time left: ${timeLeft}s`;
+        saveHighScore(score, currentLevel);
     } else {
         title.textContent = 'Game Over!';
         message.textContent = 'Time ran out! Try again?';
     }
 
     modal.classList.add('active');
+}
+
+function saveHighScore(newScore, level) {
+    let scores = JSON.parse(localStorage.getItem('matchiles-scores') || '{}');
+
+    if (!scores[level]) {
+        scores[level] = [];
+    }
+
+    scores[level].push({
+        score: newScore,
+        date: new Date().toLocaleDateString()
+    });
+
+    scores[level].sort((a, b) => b.score - a.score);
+    scores[level] = scores[level].slice(0, 5);
+
+    localStorage.setItem('matchiles-scores', JSON.stringify(scores));
+}
+
+function showLeaderboard() {
+    let scores = JSON.parse(localStorage.getItem('matchiles-scores') || '{}');
+    let leaderboardList = document.getElementById('leaderboard-list');
+
+    leaderboardList.innerHTML = '';
+
+    ['easy', 'medium', 'hard'].forEach(level => {
+        let levelSection = document.createElement('div');
+        levelSection.className = 'leaderboard-section';
+
+        let levelTitle = document.createElement('h3');
+        levelTitle.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+        levelSection.appendChild(levelTitle);
+
+        let levelScores = scores[level] || [];
+
+        if (levelScores.length === 0) {
+            let noScores = document.createElement('p');
+            noScores.textContent = 'No scores yet';
+            noScores.className = 'no-scores';
+            levelSection.appendChild(noScores);
+        } else {
+            levelScores.forEach((entry, index) => {
+                let scoreEntry = document.createElement('div');
+                scoreEntry.className = 'score-entry';
+                scoreEntry.textContent = `${index + 1}. ${entry.score} pts - ${entry.date}`;
+                levelSection.appendChild(scoreEntry);
+            });
+        }
+
+        leaderboardList.appendChild(levelSection);
+    });
+
+    document.getElementById('leaderboard-modal').classList.add('active');
 }
 
 function checkMatch() {
@@ -224,6 +279,10 @@ function resetGame() {
 
 function init() {
     document.getElementById('restart-btn').addEventListener('click', resetGame);
+    document.getElementById('leaderboard-btn').addEventListener('click', showLeaderboard);
+    document.getElementById('close-leaderboard').addEventListener('click', () => {
+        document.getElementById('leaderboard-modal').classList.remove('active');
+    });
     document.getElementById('timer').textContent = levels[currentLevel].time;
     createBoard();
 }
