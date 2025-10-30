@@ -33,6 +33,47 @@ body::before {
     50% { transform: translateY(-20px); }
 }
 
+.fog {
+    position: fixed;
+    width: 200%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.fog1 {
+    background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.1), transparent);
+    animation: fogMove1 20s infinite;
+    top: 0;
+}
+
+.fog2 {
+    background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.08), transparent);
+    animation: fogMove2 25s infinite;
+    top: 20%;
+}
+
+.fog3 {
+    background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.06), transparent);
+    animation: fogMove3 30s infinite;
+    top: 40%;
+}
+
+@keyframes fogMove1 {
+    0%, 100% { transform: translateX(-50%); }
+    50% { transform: translateX(0%); }
+}
+
+@keyframes fogMove2 {
+    0%, 100% { transform: translateX(0%); }
+    50% { transform: translateX(-50%); }
+}
+
+@keyframes fogMove3 {
+    0%, 100% { transform: translateX(-25%); }
+    50% { transform: translateX(-75%); }
+}
+
 .container {
     text-align: center;
     padding: 20px;
