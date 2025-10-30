@@ -188,3 +188,29 @@ h1 {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(102,126,234,0.4);
 }
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 36px;
+    }
+
+    .card {
+        width: 80px;
+        height: 80px;
+    }
+
+    .card-front,
+    .card-back {
+        font-size: 32px;
+    }
+
+    .game-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .difficulty-selector {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
