@@ -92,6 +92,20 @@ function gameOver(won) {
     allCards.forEach(card => {
         card.style.pointerEvents = 'none';
     });
+
+    let modal = document.getElementById('game-over-modal');
+    let title = document.getElementById('result-title');
+    let message = document.getElementById('result-message');
+
+    if (won) {
+        title.textContent = 'You Win!';
+        message.textContent = `You completed the game in ${moves} moves with ${timeLeft} seconds left!`;
+    } else {
+        title.textContent = 'Game Over!';
+        message.textContent = 'Time ran out! Try again?';
+    }
+
+    modal.classList.add('active');
 }
 
 function checkMatch() {
