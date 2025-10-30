@@ -291,6 +291,48 @@ h1 {
     transform: translateY(-2px);
 }
 
+.special-modes {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 140, 0, 0.3);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.mode-toggle:hover {
+    background: rgba(255, 140, 0, 0.2);
+    border-color: #ff8c00;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+}
+
+.mode-toggle input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.mode-toggle input[type="checkbox"]:checked + span {
+    color: #ff8c00;
+    font-weight: bold;
+}
+
+.card {
+    transition: opacity 0.5s, transform 0.2s;
+}
+
 #close-leaderboard {
     padding: 15px 40px;
     font-size: 18px;

@@ -10,6 +10,9 @@ let gameStarted = false;
 let score = 0;
 let combo = 0;
 let comboTimer = null;
+let hauntedModeActive = false;
+let ghostModeActive = false;
+let hauntedInterval = null;
 
 let levels = {
     easy: { pairs: 8, cols: 4, time: 120, preview: 5 },
@@ -80,6 +83,10 @@ function flipCard() {
     if (!gameStarted) {
         startTimer();
         gameStarted = true;
+
+        if (ghostModeActive) {
+            applyGhostMode();
+        }
     }
 
     this.classList.add('flipped');
@@ -106,6 +113,52 @@ function startTimer() {
             gameOver(false);
         }
     }, 1000);
+
+    if (hauntedModeActive) {
+        startHauntedMode();
+    }
+}
+
+function startHauntedMode() {
+    hauntedInterval = setInterval(() => {
+        let allCards = Array.from(document.querySelectorAll('.card'));
+        let unmatchedCards = allCards.filter(card => !card.classList.contains('matched') && !card.classList.contains('flipped'));
+
+        if (unmatchedCards.length > 0 && flippedCards.length === 0) {
+            let randomCard = unmatchedCards[Math.floor(Math.random() * unmatchedCards.length)];
+            randomCard.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
+
+            setTimeout(() => {
+                randomCard.querySelector('.card-inner').style.transform = 'rotateY(0deg)';
+            }, 800);
+        }
+    }, 4000);
+}
+
+function applyGhostMode() {
+    if (!ghostModeActive) return;
+
+    let allCards = Array.from(document.querySelectorAll('.card'));
+    let unmatchedCards = allCards.filter(card => !card.classList.contains('matched'));
+
+    if (unmatchedCards.length > 2) {
+        let randomCount = Math.floor(Math.random() * 3) + 1;
+
+        for (let i = 0; i < randomCount; i++) {
+            let randomCard = unmatchedCards[Math.floor(Math.random() * unmatchedCards.length)];
+            randomCard.style.opacity = '0';
+
+            setTimeout(() => {
+                randomCard.style.opacity = '1';
+            }, 2000);
+
+            unmatchedCards = unmatchedCards.filter(c => c !== randomCard);
+        }
+    }
+
+    setTimeout(() => {
+        if (gameStarted) applyGhostMode();
+    }, 8000 + Math.random() * 4000);
 }
 
 function gameOver(won) {
@@ -268,6 +321,7 @@ function resetGame() {
     score = 0;
     combo = 0;
     clearInterval(timerInterval);
+    clearInterval(hauntedInterval);
     clearTimeout(comboTimer);
     document.getElementById('moves').textContent = 0;
     document.getElementById('score').textContent = 0;
@@ -283,6 +337,15 @@ function init() {
     document.getElementById('close-leaderboard').addEventListener('click', () => {
         document.getElementById('leaderboard-modal').classList.remove('active');
     });
+
+    document.getElementById('haunted-mode').addEventListener('change', (e) => {
+        hauntedModeActive = e.target.checked;
+    });
+
+    document.getElementById('ghost-mode').addEventListener('change', (e) => {
+        ghostModeActive = e.target.checked;
+    });
+
     document.getElementById('timer').textContent = levels[currentLevel].time;
     createBoard();
 }
